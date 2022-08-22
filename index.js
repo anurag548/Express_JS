@@ -37,12 +37,12 @@ const Student = mongoose.model('Student', studentSchema);
 const Users = mongoose.model('users', usersSchema);
 
 // Create a new document
-const stud = new Student({
-    roll_no: 1,
-    name: 'Anurag Salian',
-    year: 21,
-    subjects: ['DBMS', 'OS', 'Graph Theory', 'Internet Programming']
-});
+// const stud = new Student({
+//     roll_no: 1,
+//     name: 'Anurag Salian',
+//     year: 21,
+//     subjects: ['DBMS', 'OS', 'Graph Theory', 'Internet Programming']
+// });
 // Add the document to Collections
 // stud.save().then(() => console.log("One entry added"), (err) => console.log(err));
 
@@ -77,18 +77,53 @@ app.post('/adduser', (req, res) => {
         }
     }).catch(err => console.log("Error occured, " + err)));
 })
-
-
-app.get('/users', (req, res) => {
+app.get('/api/users', (req, res) => {
     Users.find({}, (err, found) => {
         if (!err) {
             res.send(found);
         } else {
             console.log(err);
-            res.send("Some error occured!")
+            res.send("Some error occured!");
         }
-    }).catch(err => console.log("Error occured, " + err));
+    });
 });
+// async function getusers() {
+//     return Users.find({}, (err, found) => {
+//         if (!err) {
+//             res.send(found);
+//         } else {
+//             console.log(err);
+//             return "Some error occured!"
+//         }
+//     }).catch(err => console.log("Error occured, " + err));
+// }
+app.get('/api/users/:name', (req, res) => {
+    try {
+        const ename = req.params.name;
+        let final
+        Users.find({}, (err, found) => {
+            if (!err) {
+                for (let i = 0; i < found.length; i++) {
+                    found[i].name === ename ?
+                        final = found[i]
+                        // res.send(found[i])
+                        : console.log('Name is not exist');
+                }
+                res.send(final);
+            } else {
+                console.log(err);
+                res.send("Some error occured!");
+            }
+        });
+        // const ename = req.params.name;
+        // const fuser = Users.find({ name: ename });
+        // if (!fuser) res.status(404).send('Name is not exist');
+        // res.send(fuser);
+    } catch (err) {
+        res.send(err.toString());
+    }
 
+});
+app.get('/view', require('./mymiddleware.js'))
 // Server listen
 app.listen(3000, () => console.log("Server listening to port 3000"));
