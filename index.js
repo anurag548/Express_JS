@@ -101,15 +101,10 @@ app.get('/api/users/:name', (req, res) => {
     try {
         const ename = req.params.name;
         let final
-        Users.find({}, (err, found) => {
+        Users.find({name: req.params.name}, (err, found) => {
             if (!err) {
-                for (let i = 0; i <=found.length; i++) {
-                    found[i].name === ename ?
-                        final.push(found[i])
-                        // res.send(found[i])
-                        : console.log('Name is not exist');
-                }
-                res.send(final);
+                
+                res.send(found);
             } else {
                 console.log(err);
                 res.send("Some error occured!");
